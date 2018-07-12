@@ -1,0 +1,42 @@
+---
+title: "Visual Exploration"
+author: "Aaron"
+date: "7/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk(here("scripts", "load.R"))
+```
+
+```{r load}
+```
+
+```{r}
+is_interval_scaled <- function(x, nunique = 5){
+  x <- na.omit(x)
+  x <- suppressWarnings(as.numeric(x))
+  if(anyNA(x))return(FALSE)
+  if(length(unique(x)) < nunique)return(FALSE)
+  else return(TRUE)
+}
+```
+
+```{r}
+OCEAN <- c("O", "C", "E", "A", "N")
+predictors <- c("Berufsgruppe",
+                "verbale_Intelligenz_HIT",
+                "numerische_Intelligenz_HIT",
+                "Diktat",
+                paste0(OCEAN, rep(1:6, length(OCEAN)))) # Personality Facets
+```
+
+```{r}
+map(predictors, ~ggplot(mutate_if(data1, is_interval_scaled, as.vector), aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
+      geom_jitter() +
+      facet_wrap(~Berufsgruppe)) %>% walk(plot)
+```
+
