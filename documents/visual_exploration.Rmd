@@ -8,8 +8,9 @@ output: html_document
 ```{r setup, include=FALSE}
 library(here)
 library(tidyverse)
+source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
-knitr::read_chunk(here("scripts", "load.R"))
+knitr::read_chunk(here("scripts", "01load.R"))
 ```
 
 ```{r load}

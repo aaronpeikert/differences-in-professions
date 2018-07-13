@@ -1,14 +1,14 @@
 library(here)
 library(recipes)
 library(rsample)
-source(here("scripts", "load.R"))
+source(here("scripts", "01load.R"))
 
 #----recipe----
 recipe <- recipe(model_formula, 
                  data = data) %>%
   # Dummy variables on the qualitative predictors
   step_dummy(all_nominal()) %>%
-  step_BoxCox(Diktat) %>% 
+  step_BoxCox(Diktat) %>% #Diktat is extreme heavy tailed
   # Normalize
   step_center(all_predictors()) %>%
   step_scale(all_predictors())
