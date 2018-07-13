@@ -29,8 +29,9 @@ is_interval_scaled <- function(x, nunique = 5){
 ```
 
 ```{r}
-map(predictors, ~ggplot(mutate_if(data, is_interval_scaled, as.vector), aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
+map(predictors, ~ggplot(aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
       geom_jitter() +
-      facet_wrap(~Berufsgruppe)) %>% walk(plot)
+      facet_wrap(~Berufsgruppe)) %>%
+  walk(plot)
 ```
 
