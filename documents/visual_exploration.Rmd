@@ -25,13 +25,7 @@ is_interval_scaled <- function(x, nunique = 5){
 }
 ```
 
-```{r}
-OCEAN <- c("O", "C", "E", "A", "N")
-predictors <- c("Berufsgruppe",
-                "verbale_Intelligenz_HIT",
-                "numerische_Intelligenz_HIT",
-                "Diktat",
-                paste0(OCEAN, rep(1:6, length(OCEAN)))) # Personality Facets
+```{r predictors}
 ```
 
 ```{r}
