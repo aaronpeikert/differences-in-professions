@@ -11,6 +11,7 @@ data <- mutate(data, Berufsgruppe = as.factor(Berufsgruppe))
 #----predictors----
 OCEAN <- c("O", "C", "E", "A", "N")
 predictors <- c("Berufsgruppe",
+                "alter",
                 "verbale_Intelligenz_HIT",
                 "numerische_Intelligenz_HIT",
                 "Diktat",
