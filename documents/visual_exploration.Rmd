@@ -20,7 +20,7 @@ knitr::read_chunk(here("scripts", "01load.R"))
 ```
 
 ```{r}
-map(predictors[-1], ~ggplot(data, aes(x = !!sym(.x), color = Berufsgruppe)) +
+map(c("gesamt", predictors[-1]), ~ggplot(data, aes(x = !!sym(.x), color = Berufsgruppe)) +
       geom_density() +
       facet_wrap(~Berufsgruppe)) %>%
   walk(plot)
