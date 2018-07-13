@@ -35,7 +35,7 @@ predictors <- c("Berufsgruppe",
 ```
 
 ```{r}
-map(predictors, ~ggplot(mutate_if(data1, is_interval_scaled, as.vector), aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
+map(predictors, ~ggplot(mutate_if(data, is_interval_scaled, as.vector), aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
       geom_jitter() +
       facet_wrap(~Berufsgruppe)) %>% walk(plot)
 ```
