@@ -29,7 +29,14 @@ is_interval_scaled <- function(x, nunique = 5){
 ```
 
 ```{r}
-map(predictors, ~ggplot(aes(!!sym(.x), gesamt, color = as.factor(Berufsgruppe))) +
+map(predictors[-1], ~ggplot(data, aes(x = !!sym(.x), color = Berufsgruppe)) +
+      geom_density() +
+      facet_wrap(~Berufsgruppe)) %>%
+  walk(plot)
+```
+
+```{r}
+map(predictors[-1], ~ggplot(data, aes(!!sym(.x), gesamt, color = Berufsgruppe)) +
       geom_jitter() +
       facet_wrap(~Berufsgruppe)) %>%
   walk(plot)
