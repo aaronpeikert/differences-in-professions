@@ -1,0 +1,45 @@
+---
+title: "Visual Exploration"
+author: "Aaron"
+date: "7/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(Cubist)
+
+source(here("scripts", "00functions.R"))
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::read_chunk(here("scripts", "01load.R"))
+knitr::read_chunk(here("scripts", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "03cubist-rules.R"))
+```
+
+```{r load}
+```
+
+```{r predictors}
+```
+
+```{r recipe}
+```
+
+```{r resample}
+```
+
+```{r cubist-rules}
+```
+
+```{r}
+ggplot(data_cv, aes(rmse)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2)) + geom_boxplot() + theme_minimal()
+```
+
