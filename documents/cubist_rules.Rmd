@@ -22,15 +22,9 @@ knitr::read_chunk(here("scripts", "03cubist-rules.R"))
 knitr::read_chunk(here("scripts", "03linear-model.R"))
 ```
 
-# Preperation
+# Preparation
 
-```{r load}
-```
-
-```{r predictors}
-```
-
-```{r resample}
+```{r preparation, child = here("documents", "preparation.Rmd")}
 ```
 
 # Fit with Profession
