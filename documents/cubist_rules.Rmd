@@ -34,6 +34,16 @@ knitr::read_chunk(here("scripts", "03linear-model.R"))
 
 # Fit with Profession
 
+We use a single regressiontree based on:
+
+Quinlan. Learning with continuous classes. Proceedings of the 5th Australian Joint Conference On Artificial Intelligence (1992) pp. 343-348
+
+Quinlan. Combining instance-based and model-based learning. Proceedings of the Tenth International Conference on Machine Learning (1993a) pp. 236-243
+
+Quinlan. C4.5: Programs For Machine Learning (1993b) Morgan Kaufmann Publishers Inc. San Francisco, CA
+
+For more informations see: http://rulequest.com/cubist-info.html
+
 ```{r recipe-with-profession}
 ```
 
