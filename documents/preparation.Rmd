@@ -20,28 +20,32 @@ knitr::read_chunk(here("scripts", "02preprocess.R"))
 
 ## Load
 
-The data is loaded dircetly from SPSS files, the origin of the files is unclear, but the dataset seems to be allready cleaned.
+The data is loaded dircetly from SPSS files via the package `haven`, the origin of the files is unclear, but the dataset seems to be allready cleaned.
 
 ```{r load}
 ```
 
 ## Choose Predictors
 
-The predictors are choosen based on theorethical grounds, becouse it is well defined what is being measured. Therefore subtests of the intelligence tests are not included, becouse it is unclear what exactly is measured, but the avereged scores for "verbal intelligence" and "numerical intelligence". However this situation is different for the personality tests, here it is clear what a facet is supossed to measure and there might be some information beyond simple sum scores. The test "diktat" is included as proxie for "crystal intelligence". Also age is inluded since there is some variability in that sample. Additionally the profession of the person is included. This is coded into four bigger groups.
+The predictors are choosen based on theorethical grounds, becouse it is well defined what is being measured. Therefore subtests of the intelligence tests are not included, becouse it is unclear what exactly is measured beyond the avereged scores for "verbal intelligence" and "numerical intelligence". However this situation is different for the personality tests, here it is clear what a facet is supossed to measure and there might be some information beyond simple sum scores. The test "diktat" is included as proxie for "crystal intelligence". Also age is inluded since there is some variability in that sample. Additionally the profession of the person is included. This is coded into four bigger groups.
 
 ```{r predictors}
 ```
 
+```{r}
+model_formula
+```
+
 ## Resampling
 
-Due to the medium sized sample we decided to use simple crossvolding over more complicated multilayed sampling/validation strategies. It is desirable to have "assesment samples" with a size well over 30, so the sampling distribution of the mean of the error coverge faster to a normal distribution. Therefore we go fore a 10 fold crossvalidation (size of assesment sample is then ca. 50). However to get a high stability we repeat this process 10 times.
+Due to the medium sized sample we decided to use simple crossvolding over more complicated multilayed sampling/validation strategies. It is desirable to have "assesment samples" with a size well over 30, so the sampling distribution of the mean of the error coverge faster to a normal distribution. Therefore we go fore a 10 fold crossvalidation (size of assesment sample is then ca. 50). However to get a high stability we repeat this process 10 times. This is done with the R-Package `rsample`.
 
 ```{r resample}
 ```
 
 ## Preprocess
 
-All predictors are continuos except for the profession. Profession is dummy coded and then treated as any other predictor (as a numerical predictor). The visual inspection of the distribution of all predictors revealed that the subtest diktat is not symetrical. Therefore a classical Box-Cox tranformation is applied to this variable. After that all predictors are centered and scaled, to allow a proper matrix product. The outcome variable is not tranformed, so that the error estimates can be interpretet in the natural unit.
+All predictors are continuos except for the profession. Profession is dummy coded and then treated as any other predictor (as a numerical predictor). The visual inspection of the distribution of all predictors revealed that the subtest diktat is not symetrical. Therefore a classical Box-Cox tranformation is applied to this variable. After that all predictors are centered and scaled, to allow a proper matrix product. The outcome variable is not tranformed, so that the error estimates can be interpretet in the natural unit. This is done **inside** each resampling to get unbiased estimates for the hole modelling process. To archive that in a allmost unchanged modellworkflow we use the package `recipes`.
 
 ```{r recipe-with-profession, eval=FALSE}
 ```
