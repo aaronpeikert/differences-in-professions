@@ -1,5 +1,5 @@
 ---
-title: "Visual Exploration"
+title: "Compare Linear and Cubist Modell"
 author: "Aaron"
 date: "7/12/2018"
 output: html_document
