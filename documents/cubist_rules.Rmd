@@ -11,6 +11,7 @@ library(tidyverse)
 library(recipes)
 library(rsample)
 library(Cubist)
+library(pander)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
@@ -44,6 +45,14 @@ knitr::read_chunk(here("scripts", "03linear-model.R"))
 ```
 
 ```{r}
+fits <- as.data.frame(cbind(summary(data_cv$r2_cubist),
+summary(data_cv$r2_lm), summary(data_cv$rmse_cubist),
+summary(data_cv$rmse_lm)))
+names(fits) <- c("R2 Cubist", "R2 Linear Model", "RMSE Cubist", "RMSE Linear Model")
+pander(fits)
+```
+
+```{r}
 ggplot(data_cv, aes(rmse_cubist)) + geom_density() + theme_minimal()
 ggplot(data_cv, aes(id, rmse_cubist)) + geom_boxplot() + theme_minimal()
 
@@ -70,6 +79,14 @@ data_cv_with <- data_cv
 ```
 
 ```{r linear-model}
+```
+
+```{r}
+fits <- as.data.frame(cbind(summary(data_cv$r2_cubist),
+summary(data_cv$r2_lm), summary(data_cv$rmse_cubist),
+summary(data_cv$rmse_lm)))
+names(fits) <- c("R2 Cubist", "R2 Linear Model", "RMSE Cubist", "RMSE Linear Model")
+pander(fits)
 ```
 
 ```{r}
