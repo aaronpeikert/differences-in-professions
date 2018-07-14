@@ -3,8 +3,8 @@ source(here("scripts", "02preprocess.R"))
 
 #----linear-model----
 fit_lm <- function(recipe, ...){
-  pred <- recipe$var_info %>% filter(role == "predictor") %>% pull("variable")
-  out <- recipe$var_info %>% filter(role == "outcome") %>% pull("variable")
+  pred <- recipe %>% juice(all_predictors()) %>% names()
+  out <- recipe %>% juice(all_outcomes()) %>% names()
   model_formula <- as.formula(paste0(out, " ~ ", paste(pred, collapse = " + ")))
   lm(model_formula,
      data = juice(recipe, everything(), composition = "data.frame"), ...)
