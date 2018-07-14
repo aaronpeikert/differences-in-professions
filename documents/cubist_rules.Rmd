@@ -18,6 +18,7 @@ knitr::opts_chunk$set(cache = TRUE)
 knitr::read_chunk(here("scripts", "01load.R"))
 knitr::read_chunk(here("scripts", "02preprocess.R"))
 knitr::read_chunk(here("scripts", "03cubist-rules.R"))
+knitr::read_chunk(here("scripts", "03linear-model.R"))
 ```
 
 # Preperation
@@ -39,12 +40,21 @@ knitr::read_chunk(here("scripts", "03cubist-rules.R"))
 ```{r cubist-rules}
 ```
 
-```{r}
-ggplot(data_cv, aes(rmse)) + geom_density() + theme_minimal()
-ggplot(data_cv, aes(id, rmse)) + geom_boxplot() + theme_minimal()
+```{r linear-model}
+```
 
-ggplot(data_cv, aes(r2)) + geom_density() + theme_minimal()
-ggplot(data_cv, aes(id, r2)) + geom_boxplot() + theme_minimal()
+```{r}
+ggplot(data_cv, aes(rmse_cubist)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2_cubist)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(rmse_lm)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2_lm)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2_lm)) + geom_boxplot() + theme_minimal()
 ```
 
 ```{r}
@@ -59,10 +69,19 @@ data_cv_with <- data_cv
 ```{r cubist-rules}
 ```
 
-```{r}
-ggplot(data_cv, aes(rmse)) + geom_density() + theme_minimal()
-ggplot(data_cv, aes(id, rmse)) + geom_boxplot() + theme_minimal()
+```{r linear-model}
+```
 
-ggplot(data_cv, aes(r2)) + geom_density() + theme_minimal()
-ggplot(data_cv, aes(id, r2)) + geom_boxplot() + theme_minimal()
+```{r}
+ggplot(data_cv, aes(rmse_cubist)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2_cubist)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(rmse_lm)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse_cubist)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2_lm)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2_lm)) + geom_boxplot() + theme_minimal()
 ```

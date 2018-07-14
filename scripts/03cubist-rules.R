@@ -22,8 +22,9 @@ pred_cubist <- function(split, recipe, model, ...) {
   return(out)
 }
 data_cv <- mutate(data_cv,
-                  predicted = pmap(list(splits, recipes, cubist_models),
+                  predicted_cubist = pmap(list(splits, recipes, cubist_models),
                                    pred_cubist),
-                  rmse = map_dbl(predicted,
+                  rmse_cubist = map_dbl(predicted_cubist,
                                  ~sqrt(mean((.x$true - .x$predicted)^2))),
-                  r2 = map_dbl(predicted, ~sqrt(cor(.x$true, .x$predicted))))
+                  r2_cubist = map_dbl(predicted_cubist,
+                                      ~cor(.x$true, .x$predicted))^2)
