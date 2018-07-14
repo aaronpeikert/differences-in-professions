@@ -2,7 +2,12 @@
 title: "Compare Linear and Cubist Modell"
 author: "Aaron"
 date: "7/12/2018"
-output: html_document
+output:
+  html_document:
+    code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
