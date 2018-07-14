@@ -20,16 +20,20 @@ knitr::read_chunk(here("scripts", "02preprocess.R"))
 knitr::read_chunk(here("scripts", "03cubist-rules.R"))
 ```
 
+# Preperation
+
 ```{r load}
 ```
 
 ```{r predictors}
 ```
 
-```{r recipe}
+```{r resample}
 ```
 
-```{r resample}
+# Fit with Profession
+
+```{r recipe-with-profession}
 ```
 
 ```{r cubist-rules}
@@ -43,3 +47,22 @@ ggplot(data_cv, aes(r2)) + geom_density() + theme_minimal()
 ggplot(data_cv, aes(id, r2)) + geom_boxplot() + theme_minimal()
 ```
 
+```{r}
+data_cv_with <- data_cv
+```
+
+# Fit without Profession
+
+```{r recipe-without-profession}
+```
+
+```{r cubist-rules}
+```
+
+```{r}
+ggplot(data_cv, aes(rmse)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, rmse)) + geom_boxplot() + theme_minimal()
+
+ggplot(data_cv, aes(r2)) + geom_density() + theme_minimal()
+ggplot(data_cv, aes(id, r2)) + geom_boxplot() + theme_minimal()
+```
