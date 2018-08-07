@@ -4,7 +4,7 @@ source(here("scripts", "02preprocess.R"))
 
 #----cubist-rules----
 fit_cubist <- function(recipe, ...){
-  cubist(x = juice(recipe, all_predictors(), composition = "data.frame"),
+  Cubist::cubist(x = juice(recipe, all_predictors(), composition = "data.frame"),
          y = juice(recipe, all_outcomes(), composition = "matrix"),
          ...)
 }
