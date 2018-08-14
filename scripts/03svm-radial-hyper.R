@@ -10,8 +10,8 @@ fit_svmr <- function(recipe, hypermat, ...){
   out <- pmap(hypermat, svm_)
   return(out)
 }
-hypermat <- as.data.frame(expand.grid(cost = c(0.1, .5, 1, seq(1, 100, 10), 500, 1000),
-                        gamma = seq(0, 1, 1/10),
+hypermat <- as.data.frame(expand.grid(cost = 10^seq(-10, -1),
+                        gamma = 10^seq(-10, -1),
                         kernel = "radial",
                         scale = F,
                         stringsAsFactors = FALSE))
