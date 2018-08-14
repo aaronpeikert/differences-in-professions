@@ -14,7 +14,7 @@ predictors <- c("Berufsgruppe",
                 "alter",
                 "verbale_Intelligenz_HIT",
                 "numerische_Intelligenz_HIT",
-                "Diktat",
+                #"Diktat", # even though diktat was box-cox tranformed, centered and scaled it lowers the performance of svm to zero
                 paste0(OCEAN, rep(1:6, length(OCEAN)))) # Personality Facets
 
 model_formula <- as.formula(paste0("gesamt ~ ", paste(predictors, collapse = " + ")))

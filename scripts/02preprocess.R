@@ -14,7 +14,7 @@ data_cv <- rsample::vfold_cv(data,
 recipe <- recipe(model_formula, 
                  data = data) %>%
   step_dummy(Berufsgruppe) %>% 
-  step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
+  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
   # Normalize
   step_center(all_predictors()) %>%
   step_scale(all_predictors())
@@ -31,7 +31,7 @@ model_formula <- as.formula(paste0("gesamt ~ ", paste(predictors, collapse = " +
 
 recipe <- recipe(model_formula, 
                  data = data) %>%
-  step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
+  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
   # Normalize
   step_center(all_predictors()) %>%
   step_scale(all_predictors())
