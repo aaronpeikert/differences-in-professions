@@ -44,3 +44,12 @@ data_cv <- mutate(data_cv,
                                       ~sqrt(mean((.x$true - .x$predicted)^2))),
                   r2_svmr = map_dbl(predicted_svmr,
                                     ~cor(.x$true, .x$predicted))^2)
+
+best_hyper <- data_cv %>%
+  group_by(cost, gamma) %>%
+  summarise(r2_svmr = mean(r2_svmr)) %>%
+  ungroup() %>% 
+  filter(r2_svmr == max(r2_svmr, na.rm = TRUE))
+
+data_cv <- filter(data_cv, cost == best_hyper$cost, gamma == best_hyper$gamma)  
+  
