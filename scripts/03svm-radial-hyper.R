@@ -43,7 +43,7 @@ data_cv <- mutate(data_cv,
                   rmse_svmr = map_dbl(predicted_svmr,
                                       ~sqrt(mean((.x$true - .x$predicted)^2))),
                   r2_svmr = map_dbl(predicted_svmr,
-                                    ~cor(.x$true, .x$predicted))^2)
+                                    ~suppressWarnings(cor(.x$true, .x$predicted))^2))
 
 best_hyper <- data_cv %>%
   group_by(cost, gamma) %>%
