@@ -43,7 +43,7 @@ data_cv <- mutate(data_cv,
                                     ~suppressWarnings(cor(.x$true, .x$predicted))^2))
 
 best_hyper <- data_cv %>%
-  group_by(cost, gamma) %>%
+  group_by(hidden) %>%
   summarise(r2_nn = mean(r2_nn)) %>%
   ungroup() %>% 
   filter(r2_nn == max(r2_nn, na.rm = TRUE))
