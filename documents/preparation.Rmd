@@ -15,6 +15,7 @@ library(here)
 library(tidyverse)
 library(recipes)
 library(rsample)
+library(rpart.plot)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
@@ -49,8 +50,6 @@ Due to the medium sized sample we decided to use simple crossvolding over more c
 ```
 
 ## Preprocess
-
-All predictors are continuos except for the profession. Profession is dummy coded and then treated as any other predictor (as a numerical predictor). The visual inspection of the distribution of all predictors revealed that the subtest diktat is not symetrical. The attempt to correct that with a Box-Cox tranformation failed for the the support vector machine with radial kernal, it is hence currently not included. After that all predictors are centered and scaled, to allow a proper matrix product. The outcome variable is not tranformed, so that the error estimates can be interpretet in the natural unit. This is done **inside** each resampling to get unbiased estimates for the hole modelling process adn prevent information leakage betweean resamples. To archive that in a allmost unchanged modellworkflow we use the package `recipes`.
 
 ```{r recipe-with-profession, eval=FALSE}
 ```

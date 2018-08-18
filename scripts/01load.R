@@ -10,12 +10,12 @@ data <- mutate(data, Berufsgruppe = as.factor(Berufsgruppe))
 
 #----predictors----
 OCEAN <- c("O", "C", "E", "A", "N")
-predictors <- c("Berufsgruppe",
+predictors <- c("gesamt",
                 "alter",
                 "verbale_Intelligenz_HIT",
                 "numerische_Intelligenz_HIT",
                 #"Diktat", # even though diktat was box-cox tranformed, centered and scaled it lowers the performance of svm to zero
                 paste0(OCEAN, rep(1:6, length(OCEAN)))) # Personality Facets
 
-model_formula <- as.formula(paste0("gesamt ~ ", paste(predictors, collapse = " + ")))
+model_formula <- as.formula(paste0("Berufsgruppe ~ ", paste(predictors, collapse = " + ")))
 
