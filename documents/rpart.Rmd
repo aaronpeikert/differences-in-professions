@@ -1,0 +1,58 @@
+---
+title: "Predict Profesion with rpart"
+author: "Aaron"
+date: "7/12/2018"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+  
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(rpart)
+library(pander)
+
+source(here("scripts", "00functions.R"))
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache.lazy = FALSE)
+knitr::read_chunk(here("scripts", "01load.R"))
+knitr::read_chunk(here("scripts", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "03rpart.R"))
+```
+
+# Preparation
+
+```{r preparation, child = here("documents", "preparation.Rmd")}
+```
+
+```{r recipe}
+```
+
+# Classifikation Tree
+
+```{r rpart}
+```
+
+## Best Solution
+
+```{r}
+recipe %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE, minsplit = best_hyper$minsplit,
+            minbucket = best_hyper$minbucket) %>% 
+  rpart.plot(fallen.leaves = F)
+
+data_cv %>%
+  filter(minsplit == best_hyper$minsplit, minbucket == best_hyper$minbucket) %>% 
+  ggplot(aes(CramerV)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+```
+
