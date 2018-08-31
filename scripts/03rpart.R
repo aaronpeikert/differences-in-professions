@@ -1,5 +1,5 @@
 library(rpart)
-library(hmeasure)
+library(DescTools)
 library(here)
 library(rpart.plot)
 source(here("scripts", "02preprocess.R"))
@@ -54,19 +54,17 @@ decide <- function(probs, ...){
   out <- probs %>% select(...) %>% pmap_chr(decide_)
 }
 
-accuracy <- function(x, y){
-  correct <- x == y
-  mean(correct)
-}
 data_cv <- data_cv %>%
   mutate(predicted_class = map(predicted_rpart, "probs") %>%
            map(decide, num_range("", 1:5)),
          true_class = map(predicted_rpart, "true") %>%
            map(1) %>%
-           map(as.character),
-         accuracy = map2_dbl(predicted_class, true_class, accuracy))
+           map(as.character))
+
+data_cv <- mutate(data_cv, CramerV = map2_dbl(predicted_class, true_class, CramerV))
+
 best_hyper <- data_cv %>%
   group_by(minsplit, minbucket) %>%
-  summarise(accuracy = mean(accuracy)) %>%
+  summarise(CramerV = mean(CramerV)) %>%
   ungroup() %>% 
-  filter(accuracy == max(accuracy))
+  filter(CramerV == max(CramerV))
