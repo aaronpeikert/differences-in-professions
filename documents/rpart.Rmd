@@ -17,6 +17,7 @@ library(recipes)
 library(rsample)
 library(rpart)
 library(pander)
+library(DescTools)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
@@ -25,6 +26,7 @@ knitr::opts_chunk$set(cache.lazy = FALSE)
 knitr::read_chunk(here("scripts", "01load.R"))
 knitr::read_chunk(here("scripts", "02preprocess.R"))
 knitr::read_chunk(here("scripts", "03rpart.R"))
+knitr::read_chunk(here("scripts", "04measures.R"))
 ```
 
 # Preparation
@@ -38,6 +40,23 @@ knitr::read_chunk(here("scripts", "03rpart.R"))
 # Classifikation Tree
 
 ```{r rpart}
+```
+
+## Calc Measures
+
+```{r prediction}
+```
+
+```{r decide}
+```
+
+```{r accuracy}
+```
+
+```{r cramerv}
+```
+
+```{r multiAUC}
 ```
 
 ## Best Hyperparameter

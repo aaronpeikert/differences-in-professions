@@ -51,7 +51,7 @@ data_cv <- mutate(data_cv, acc = map2_dbl(predicted_class, true_class, accuracy)
 #----cramerv----
 data_cv <- mutate(data_cv, CramerV = map2_dbl(predicted_class, true_class, CramerV))
 
-#----multi-auc----
+#----multiAUC----
 multAUC <- function(true, probs){
   true <- as.factor(true)
   m = caTools::colAUC(probs, true)
