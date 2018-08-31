@@ -40,19 +40,16 @@ knitr::read_chunk(here("scripts", "03rpart.R"))
 ```{r rpart}
 ```
 
-## Best Solution
+## Best Hyperparameter
 
 ```{r}
-recipe %>%
-  prep(data, retain = TRUE) %>%
-  fit_rpart(model = TRUE, minsplit = best_hyper$minsplit,
-            minbucket = best_hyper$minbucket) %>% 
-  rpart.plot(fallen.leaves = F)
+best_hyper <- data_cv %>%
+  group_by(minsplit, minbucket) %>%
+  summarise_at(vars(acc, CramerV, multAUC), mean) %>% 
+  gather(measure, value, acc, CramerV, multAUC) %>% 
+  group_by(measure) %>% 
+  filter(value == max(value)) %>% 
+  slice(1L)
 
-data_cv %>%
-  filter(minsplit == best_hyper$minsplit, minbucket == best_hyper$minbucket) %>% 
-  ggplot(aes(CramerV)) +
-  geom_density(fill = "lightgrey") +
-  theme_minimal()
+pander(best_hyper)
 ```
-
