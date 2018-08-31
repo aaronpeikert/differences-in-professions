@@ -10,8 +10,7 @@ data <- mutate(data, Berufsgruppe = as.factor(Berufsgruppe))
 
 #----predictors----
 OCEAN <- c("O", "C", "E", "A", "N")
-predictors <- c("gesamt",
-                "alter",
+predictors <- c("alter",
                 "verbale_Intelligenz_HIT",
                 "numerische_Intelligenz_HIT",
                 #"Diktat", # even though diktat was box-cox tranformed, centered and scaled it lowers the performance of svm to zero
