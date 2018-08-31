@@ -21,7 +21,7 @@ library(DescTools)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache = FALSE)
 knitr::opts_chunk$set(cache.lazy = FALSE)
 knitr::read_chunk(here("scripts", "01load.R"))
 knitr::read_chunk(here("scripts", "02preprocess.R"))
@@ -72,3 +72,30 @@ best_hyper <- data_cv %>%
 
 pander(best_hyper)
 ```
+
+```{r}
+recipe %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE, minsplit = best_hyper$minsplit[[1]],
+            minbucket = best_hyper$minbucket[[1]]) %>% 
+  rpart.plot(fallen.leaves = F)
+
+data_cv %>%
+  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  ggplot(aes(acc)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+
+data_cv %>%
+  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  ggplot(aes(CramerV)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+
+data_cv %>%
+  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  ggplot(aes(multAUC)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+```
+
