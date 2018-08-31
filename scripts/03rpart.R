@@ -67,4 +67,5 @@ best_hyper <- data_cv %>%
   group_by(minsplit, minbucket) %>%
   summarise(CramerV = mean(CramerV)) %>%
   ungroup() %>% 
-  filter(CramerV == max(CramerV))
+  filter(CramerV == max(CramerV)) %>% 
+  slice(1L)
