@@ -1,4 +1,4 @@
-library(rpart)
+library(rpartScore)
 library(here)
 source(here("scripts", "02preprocess.R"))
 
@@ -8,16 +8,15 @@ fit_rpart <- function(recipe, ...){
   pred <- recipe %>% juice(all_predictors()) %>% names()
   out <- recipe %>% juice(all_outcomes()) %>% names()
   model_formula <- as.formula(paste0(out, " ~ ", paste(pred, collapse = " + ")))
-  rpart(model_formula,
+  rpartScore(model_formula,
         data = juice(recipe, everything(), composition = "data.frame"),
-        method = "class",
         ...)
 }
-hypermat <- as.data.frame(expand.grid(minsplit = c(10, 15, 20, 25, 30, 35, 40, 50),
-                                      minbucket = c(5, 10, 15, 20, 25, 30)))
+hypermat <- as.data.frame(expand.grid(split = c("abs", "quad"),
+                                      prune = c("mc", "mr"), stringsAsFactors = FALSE))
 
 data_cv <- data_cv %>%
   mutate(hypermat = list(hypermat)) %>% 
   unnest(hypermat, .preserve = c(splits, recipes))
 
-data_cv <- mutate(data_cv, rpart_models = pmap(list(recipe = recipes, minsplit = minsplit, minbucket = minbucket), fit_rpart))
+data_cv <- mutate(data_cv, rpart_models = pmap(list(recipe = recipes, split = split, prune = prune), fit_rpart))

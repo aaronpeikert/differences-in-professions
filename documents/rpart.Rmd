@@ -15,7 +15,7 @@ library(here)
 library(tidyverse)
 library(recipes)
 library(rsample)
-library(rpart)
+library(rpartScore)
 library(rpart.plot)
 library(pander)
 library(DescTools)
@@ -48,25 +48,19 @@ knitr::read_chunk(here("scripts", "04measures.R"))
 ```{r prediction}
 ```
 
-```{r decide}
-```
-
 ```{r accuracy}
 ```
 
 ```{r cramerv}
 ```
 
-```{r multiAUC}
-```
-
 ## Best Hyperparameter
 
 ```{r}
 best_hyper <- data_cv %>%
-  group_by(minsplit, minbucket) %>%
-  summarise_at(vars(acc, CramerV, multAUC), mean) %>% 
-  gather(measure, value, acc, CramerV, multAUC) %>% 
+  group_by(split, prune) %>%
+  summarise_at(vars(acc, CramerV), mean) %>% 
+  gather(measure, value, acc, CramerV) %>% 
   group_by(measure) %>% 
   filter(value == max(value)) %>% 
   slice(1L)
@@ -77,25 +71,19 @@ pander(best_hyper)
 ```{r}
 recipe %>%
   prep(data, retain = TRUE) %>%
-  fit_rpart(model = TRUE, minsplit = best_hyper$minsplit[[1]],
-            minbucket = best_hyper$minbucket[[1]]) %>% 
+  fit_rpart(model = TRUE, split = best_hyper$split[[1]],
+            prune = best_hyper$prune[[1]]) %>% 
   rpart.plot(fallen.leaves = F)
 
 data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  filter(split == best_hyper$split[[1]], prune == best_hyper$prune[[1]]) %>% 
   ggplot(aes(acc)) +
   geom_density(fill = "lightgrey") +
   theme_minimal()
 
 data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  filter(split == best_hyper$split[[1]], prune == best_hyper$prune[[1]]) %>% 
   ggplot(aes(CramerV)) +
-  geom_density(fill = "lightgrey") +
-  theme_minimal()
-
-data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
-  ggplot(aes(multAUC)) +
   geom_density(fill = "lightgrey") +
   theme_minimal()
 ```
