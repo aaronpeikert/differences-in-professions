@@ -19,7 +19,7 @@ library(rpart.plot)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache = FALSE)
 knitr::read_chunk(here("scripts", "01load.R"))
 knitr::read_chunk(here("scripts", "02preprocess.R"))
 ```
@@ -29,6 +29,9 @@ knitr::read_chunk(here("scripts", "02preprocess.R"))
 The data is loaded dircetly from SPSS files via the package `haven`, the origin of the files is unclear, but the dataset seems to be allready cleaned.
 
 ```{r load}
+```
+
+```{r collapse-categories}
 ```
 
 ## Choose Predictors

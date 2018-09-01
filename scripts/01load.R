@@ -10,6 +10,10 @@ data <- mutate(data,
                Berufsgruppe = as.factor(Berufsgruppe),
                gesamt = as.factor(.data$gesamt))
 
+#----collapse-categories----
+data <- mutate(data,
+               gesamt = recode_factor(gesamt, `3` = 5, `4` = 5, `5` = 5, `6` = 6, `7` = 7))
+
 #----predictors----
 OCEAN <- c("O", "C", "E", "A", "N")
 predictors <- c("alter",
