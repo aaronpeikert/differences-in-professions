@@ -8,7 +8,7 @@ set.seed(1002)
 data_cv <- rsample::vfold_cv(data,
                              v = 10, #ten folds
                              repeats = 10, #ten repeats
-                             strata = "Berufsgruppe") #stratified
+                             strata = "gesamt") #stratified
 
 #----recipe----
 recipe <- recipe(model_formula, 
