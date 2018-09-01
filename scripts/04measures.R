@@ -31,7 +31,7 @@ decide <- function(probs, ...){
     }
     return(out)
   }
-  out <- probs %>% select(...) %>% pmap_chr(decide_)
+  out <- probs %>% pmap_chr(decide_)
 }
 
 data_cv <- data_cv %>%
