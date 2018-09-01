@@ -15,8 +15,8 @@ recipe <- recipe(model_formula,
                  data = data) %>%
   #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
   # Normalize
-  step_center(all_predictors()) %>%
-  step_scale(all_predictors())
+  step_center(all_predictors(), -Berufsgruppe) %>%
+  step_scale(all_predictors(), -Berufsgruppe)
 
 data_cv <- mutate(data_cv, recipes = map(splits,
                                 prepper,

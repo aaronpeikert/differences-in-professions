@@ -16,6 +16,7 @@ library(tidyverse)
 library(recipes)
 library(rsample)
 library(rpart)
+library(rpart.plot)
 library(pander)
 library(DescTools)
 
