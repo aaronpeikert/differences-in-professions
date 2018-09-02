@@ -1,13 +1,13 @@
 ---
-title: "Is there a Difference if we ignore profession?"
+title: "Is there a Difference if we ignore Profession?"
 author: "Aaron"
 date: "02/09/2018"
 output:
   html_document:
-  code_folding: hide
-number_sections: yes
-toc: yes
-toc_float: yes
+    code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_float: yes
 ---
   
 ```{r setup, include=FALSE}
@@ -17,6 +17,8 @@ library(recipes)
 library(rsample)
 library(rpartScore)
 library(pander)
+library(rpart.plot)
+library(tidyposterior)
 library(DescTools)
 
 source(here("scripts", "00functions.R"))
@@ -30,6 +32,8 @@ knitr::read_chunk(here("scripts", "04measures.R"))
 knitr::read_chunk(here("scripts", "05posterior.R"))
 ```
 
+# Preparing
+
 ```{r load}
 ```
 
@@ -42,7 +46,17 @@ knitr::read_chunk(here("scripts", "05posterior.R"))
 ```{r recipe}
 ```
 
-```{r rpart}
+```{r cache}
+refit_rpart <- !fs::file_exists(here("out", "data_cv.rds"))
+```
+
+# Fit Model & Cross Validate
+
+```{r rpart, eval = refit_rpart}
+```
+
+```{r cache2, eval = !refit_rpart}
+data_cv <- read_rds(here("out", "data_cv.rds"))
 ```
 
 ```{r prediction}
@@ -54,58 +68,74 @@ knitr::read_chunk(here("scripts", "05posterior.R"))
 ```{r cramerv}
 ```
 
-```{r acc-model}
+# Refit Model to Full Datset
+
+```{r}
+fit_rpart <- function(recipe, ...){
+  #browser()
+  pred <- recipe %>% juice(all_predictors()) %>% names()
+  out <- recipe %>% juice(all_outcomes()) %>% names()
+  model_formula <- as.formula(paste0(out, " ~ ", paste(pred, collapse = " + ")))
+  rpartScore(model_formula,
+        data = juice(recipe, everything(), composition = "data.frame"),
+        ...)
+}
 ```
 
-```{r cramerv-model}
+```{r, cache=TRUE}
+recipe_i %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE,
+            split = "abs",
+            prune = "mr") %>% 
+  rpart.plot(fallen.leaves = F)
+```
+
+```{r, cache=TRUE}
+recipe_e %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE,
+            split = "abs",
+            prune = "mr") %>% 
+  rpart.plot(fallen.leaves = F)
 ```
 
 # Posterior Distribution for Difference in Accuracy
 
-```{r acc-model}
+```{r acc-model, results='hide'}
 ```
 
 ```{r}
-ggplot(acc_stacked, aes(x = model, y = statistic, group = id, col = id)) + 
+acc_stacked %>% 
+  unite(id, id, id2) %>% 
+  ggplot(aes(x = model, y = statistic, group = id, col = id)) + 
   geom_line(alpha = .75) + 
   theme_minimal() +
   theme(legend.position = "none") +
   NULL
 acc_model$stan
-ggplot(acc_post) + 
-  # Add the observed data to check for consistency 
-  geom_point(
-    data = acc_stacked, 
-    aes(x = model, y = statistic), 
-    alpha = .5, col = "blue"
-  ) + 
-  theme_minimal() +
-  NULL
-summary(acc_vs)
+summary(acc_vs) %>%
+  select(contrast, probability, mean, lower, upper) %>%
+  pander()
 ggplot(acc_vs) + theme_minimal()
 ```
 
 # Posterior Distribution for Difference in Cramer's V
 
-```{r acc-model}
+```{r cramerv-model, results='hide'}
 ```
 
 ```{r}
-ggplot(cramerv_stacked, aes(x = model, y = statistic, group = id, col = id)) + 
+cramerv_stacked %>% 
+  unite(id, id, id2) %>% 
+  ggplot(aes(x = model, y = statistic, group = id, col = id)) + 
   geom_line(alpha = .75) + 
   theme_minimal() +
   theme(legend.position = "none") +
   NULL
 cramerv_model$stan
-ggplot(cramerv_post) + 
-  # Add the observed data to check for consistency 
-  geom_point(
-    data = cramerv_stacked, 
-    aes(x = model, y = statistic), 
-    alpha = .5, col = "blue"
-  ) + 
-  theme_minimal() +
-  NULL
-summary(cramerv_vs)
+summary(cramerv_vs) %>%
+  select(contrast, probability, mean, lower, upper) %>%
+  pander()
 ggplot(acc_vs) + theme_minimal()
 ```
