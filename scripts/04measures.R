@@ -16,15 +16,15 @@ pred_rpart <- function(split, recipe, model, ...){
   return(out)
 }
 data_cv <- mutate(data_cv,
-                  predicted_rpart1 = pmap(list(splits, recipes1, rpart_models1),
+                  predicted_rpart_i = pmap(list(splits, recipes_i, rpart_models_i),
                                          pred_rpart),
-                  predicted_rpart2 = pmap(list(splits, recipes2, rpart_models2),
+                  predicted_rpart_e = pmap(list(splits, recipes_e, rpart_models_e),
                                           pred_rpart))
 
 data_cv <- data_cv %>%
-  mutate(predicted_class1 = map(predicted_rpart1, "predicted"),
-         predicted_class2 = map(predicted_rpart2, "predicted"),
-         true_class = map(predicted_rpart1, "true") %>%
+  mutate(predicted_class_i = map(predicted_rpart_i, "predicted"),
+         predicted_class_e = map(predicted_rpart_e, "predicted"),
+         true_class = map(predicted_rpart_i, "true") %>%
            map(1) %>%
            map(as.character))
 
@@ -33,10 +33,10 @@ accuracy <- function(x, y){
   correct <- x == y
   mean(correct)
 }
-data_cv <- mutate(data_cv, acc1 = map2_dbl(predicted_class1, true_class, accuracy),
-                  acc2 = map2_dbl(predicted_class2, true_class, accuracy))
+data_cv <- mutate(data_cv, acc_i = map2_dbl(predicted_class_i, true_class, accuracy),
+                  acc_e = map2_dbl(predicted_class_e, true_class, accuracy))
 
 #----cramerv----
 data_cv <- mutate(data_cv,
-                  CramerV1 = map2_dbl(predicted_class1, true_class, CramerV),
-                  CramerV2 = map2_dbl(predicted_class2, true_class, CramerV))
+                  cramerv_i = map2_dbl(predicted_class_i, true_class, CramerV),
+                  cramerv_e = map2_dbl(predicted_class_e, true_class, CramerV))

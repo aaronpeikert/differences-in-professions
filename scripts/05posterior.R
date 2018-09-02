@@ -10,7 +10,7 @@ acc_post <- tidy(acc_model)
 acc_vs <- contrast_models(acc_model)
 
 #----cramerv-model----
-cramerv <- select(data_cv, starts_with("id"), starts_with("CramerV"))
+cramerv <- select(data_cv, starts_with("id"), starts_with("cramerv"))
 cramerv_stacked <- gather(cramerv)
 cramerv_model <- perf_mod(cramerv)
 cramerv_post <- tidy(cramerv_model)

@@ -17,8 +17,8 @@ hypermat <- as.data.frame(expand.grid(split = c("abs"),
 
 data_cv <- data_cv %>%
   mutate(hypermat = list(hypermat)) %>% 
-  unnest(hypermat, .preserve = c(splits, recipes1, recipes2))
+  unnest(hypermat, .preserve = c(splits, recipes_i, recipes_e))
 
 data_cv <- mutate(data_cv,
-                  rpart_models1 = pmap(list(recipe = recipes1, split = split, prune = prune), fit_rpart),
-                  rpart_models2 = pmap(list(recipe = recipes2, split = split, prune = prune), fit_rpart))
+                  rpart_models_i = pmap(list(recipe = recipes_i, split = split, prune = prune), fit_rpart),
+                  rpart_models_e = pmap(list(recipe = recipes_e, split = split, prune = prune), fit_rpart))
