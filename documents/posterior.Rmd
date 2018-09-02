@@ -1,0 +1,111 @@
+---
+title: "Is there a Difference if we ignore profession?"
+author: "Aaron"
+date: "02/09/2018"
+output:
+  html_document:
+  code_folding: hide
+number_sections: yes
+toc: yes
+toc_float: yes
+---
+  
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(rpartScore)
+library(pander)
+library(DescTools)
+
+source(here("scripts", "00functions.R"))
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = FALSE)
+knitr::opts_chunk$set(cache.lazy = FALSE)
+knitr::read_chunk(here("scripts", "01load.R"))
+knitr::read_chunk(here("scripts", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "03rpart.R"))
+knitr::read_chunk(here("scripts", "04measures.R"))
+knitr::read_chunk(here("scripts", "05posterior.R"))
+```
+
+```{r load}
+```
+
+```{r predictors}
+```
+
+```{r resample}
+```
+
+```{r recipe}
+```
+
+```{r rpart}
+```
+
+```{r prediction}
+```
+
+```{r accuracy}
+```
+
+```{r cramerv}
+```
+
+```{r acc-model}
+```
+
+```{r cramerv-model}
+```
+
+# Posterior Distribution for Difference in Accuracy
+
+```{r acc-model}
+```
+
+```{r}
+ggplot(acc_stacked, aes(x = model, y = statistic, group = id, col = id)) + 
+  geom_line(alpha = .75) + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  NULL
+acc_model$stan
+ggplot(acc_post) + 
+  # Add the observed data to check for consistency 
+  geom_point(
+    data = acc_stacked, 
+    aes(x = model, y = statistic), 
+    alpha = .5, col = "blue"
+  ) + 
+  theme_minimal() +
+  NULL
+summary(acc_vs)
+ggplot(acc_vs) + theme_minimal()
+```
+
+# Posterior Distribution for Difference in Cramer's V
+
+```{r acc-model}
+```
+
+```{r}
+ggplot(cramerv_stacked, aes(x = model, y = statistic, group = id, col = id)) + 
+  geom_line(alpha = .75) + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  NULL
+cramerv_model$stan
+ggplot(cramerv_post) + 
+  # Add the observed data to check for consistency 
+  geom_point(
+    data = cramerv_stacked, 
+    aes(x = model, y = statistic), 
+    alpha = .5, col = "blue"
+  ) + 
+  theme_minimal() +
+  NULL
+summary(cramerv_vs)
+ggplot(acc_vs) + theme_minimal()
+```
