@@ -12,11 +12,13 @@ fit_rpart <- function(recipe, ...){
         data = juice(recipe, everything(), composition = "data.frame"),
         ...)
 }
-hypermat <- as.data.frame(expand.grid(split = c("abs", "quad"),
-                                      prune = c("mc", "mr"), stringsAsFactors = FALSE))
+hypermat <- as.data.frame(expand.grid(split = c("abs"),
+                                      prune = c("mr"), stringsAsFactors = FALSE))
 
 data_cv <- data_cv %>%
   mutate(hypermat = list(hypermat)) %>% 
-  unnest(hypermat, .preserve = c(splits, recipes))
+  unnest(hypermat, .preserve = c(splits, recipes1, recipes2))
 
-data_cv <- mutate(data_cv, rpart_models = pmap(list(recipe = recipes, split = split, prune = prune), fit_rpart))
+data_cv <- mutate(data_cv,
+                  rpart_models1 = pmap(list(recipe = recipes1, split = split, prune = prune), fit_rpart),
+                  rpart_models2 = pmap(list(recipe = recipes2, split = split, prune = prune), fit_rpart))

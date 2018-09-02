@@ -11,15 +11,28 @@ data_cv <- rsample::vfold_cv(data,
                              strata = "gesamt") #stratified
 
 #----recipe----
-recipe <- recipe(model_formula, 
+recipe1 <- recipe(model_formula1, 
                  data = data) %>%
   #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
   # Normalize
   step_center(all_predictors(), -Berufsgruppe) %>%
   step_scale(all_predictors(), -Berufsgruppe)
 
-data_cv <- mutate(data_cv, recipes = map(splits,
+recipe2 <- recipe(model_formula2, 
+                  data = data) %>%
+  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
+  # Normalize
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors())
+
+data_cv <- mutate(data_cv,
+                  recipes1 = map(splits,
                                 prepper,
-                                recipe = recipe,
+                                recipe = recipe1,
+                                retain = TRUE,
+                                verbose = FALSE),
+                  recipes2 = map(splits,
+                                prepper,
+                                recipe = recipe2,
                                 retain = TRUE,
                                 verbose = FALSE))
