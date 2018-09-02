@@ -8,7 +8,7 @@ data <- rename(data, gesamt = gesamtbeurteilung_mean_gerundet_je_mehr_desto_mehr
 data <- mutate_all(data, as.vector) # remove spss atributes, they make some problems in modelling
 data <- mutate(data,
                Berufsgruppe = as.factor(Berufsgruppe),
-               gesamt = as.factor(.data$gesamt))
+               gesamt = as.numeric(.data$gesamt))
 
 #----predictors----
 OCEAN <- c("O", "C", "E", "A", "N")
