@@ -34,8 +34,14 @@ knitr::read_chunk(here("scripts", "05posterior.R"))
 
 # Preparing
 
+Everthing gets standatized, inside the resamples.
+
 ```{r load}
 ```
+
+# Fit Model & Cross Validate
+
+We repeat a ten fold crossvalidation ten times. The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gird search and the same cross-validation procedure.
 
 ```{r predictors}
 ```
@@ -49,8 +55,6 @@ knitr::read_chunk(here("scripts", "05posterior.R"))
 ```{r cache}
 refit_rpart <- !fs::file_exists(here("out", "data_cv.rds"))
 ```
-
-# Fit Model & Cross Validate
 
 ```{r rpart, eval = refit_rpart}
 ```
@@ -70,6 +74,8 @@ data_cv <- read_rds(here("out", "data_cv.rds"))
 
 # Refit Model to Full Datset
 
+There where two different models one with the variable Berufgruppe (indicated via suffix `_i` or "include") or without (indicated with suffix `_e` or excluded).
+
 ```{r}
 fit_rpart <- function(recipe, ...){
   #browser()
@@ -82,6 +88,8 @@ fit_rpart <- function(recipe, ...){
 }
 ```
 
+## Included
+
 ```{r, cache=TRUE}
 recipe_i %>%
   prep(data, retain = TRUE) %>%
@@ -90,6 +98,8 @@ recipe_i %>%
             prune = "mr") %>% 
   rpart.plot(fallen.leaves = F)
 ```
+
+## Excluded
 
 ```{r, cache=TRUE}
 recipe_e %>%
@@ -100,29 +110,40 @@ recipe_e %>%
   rpart.plot(fallen.leaves = F)
 ```
 
-# Posterior Distribution for Difference in Accuracy
+# Compare included & excluded
 
-```{r acc-model, results='hide'}
+## Descriptive
+
+```{r}
+data_cv %>%
+  select(acc_i, acc_e, cramerv_i, cramerv_e) %>% 
+  gather() %>% 
+  mutate(measure = str_remove(model, "_[i,e]$"),
+         model = if_else(str_extract(model, "[i,e]$") == "i", "included", "excluded")) %>% 
+  ggplot(aes(statistic, color = model)) +
+  geom_density() +
+  facet_wrap(~measure) +
+  theme_minimal() +
+  NULL
+```
+
+### Accuracy
+
+```{r acc-stacked}
 ```
 
 ```{r}
-acc_stacked %>% 
+acc_stacked %>%
   unite(id, id, id2) %>% 
   ggplot(aes(x = model, y = statistic, group = id, col = id)) + 
   geom_line(alpha = .75) + 
   theme_minimal() +
   theme(legend.position = "none") +
+  ylab("accuracy") +
   NULL
-acc_model$stan
-summary(acc_vs) %>%
-  select(contrast, probability, mean, lower, upper) %>%
-  pander()
-ggplot(acc_vs) + theme_minimal()
 ```
 
-# Posterior Distribution for Difference in Cramer's V
-
-```{r cramerv-model, results='hide'}
+```{r cramerv-stacked}
 ```
 
 ```{r}
@@ -132,7 +153,29 @@ cramerv_stacked %>%
   geom_line(alpha = .75) + 
   theme_minimal() +
   theme(legend.position = "none") +
+  ylab("Craner's V") +
   NULL
+```
+
+## Posterior Distribution for Difference in Accuracy
+
+```{r acc-model, results='hide'}
+```
+
+```{r}
+acc_model$stan
+summary(acc_vs) %>%
+  select(contrast, probability, mean, lower, upper) %>%
+  pander()
+ggplot(acc_vs) + theme_minimal()
+```
+
+## Posterior Distribution for Difference in Cramer's V
+
+```{r cramerv-model, results='hide'}
+```
+
+```{r}
 cramerv_model$stan
 summary(cramerv_vs) %>%
   select(contrast, probability, mean, lower, upper) %>%
