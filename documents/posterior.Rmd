@@ -20,6 +20,7 @@ library(pander)
 library(rpart.plot)
 library(tidyposterior)
 library(DescTools)
+library(skimr)
 
 source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = TRUE)
@@ -30,6 +31,7 @@ knitr::read_chunk(here("scripts", "02preprocess.R"))
 knitr::read_chunk(here("scripts", "03rpart.R"))
 knitr::read_chunk(here("scripts", "04measures.R"))
 knitr::read_chunk(here("scripts", "05posterior.R"))
+skim_with(numeric = list(p25 = NULL, p75 = NULL, missing = NULL))
 ```
 
 # Preparing
@@ -39,12 +41,19 @@ Everthing gets standatized, inside the resamples.
 ```{r load}
 ```
 
-# Fit Model & Cross Validate
-
-We repeat a ten fold crossvalidation ten times. The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gird search and the same cross-validation procedure.
+# Descriptives
 
 ```{r predictors}
 ```
+
+```{r}
+data %>% select(one_of(predictors_i))  %>% skim()
+```
+
+
+# Fit Model & Cross Validate
+
+We repeat a ten fold crossvalidation ten times. The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gird search and the same cross-validation procedure.
 
 ```{r resample}
 ```
@@ -125,6 +134,9 @@ data_cv %>%
   facet_wrap(~measure) +
   theme_minimal() +
   NULL
+
+data_cv %>%
+  select(acc_i, acc_e, cramerv_i, cramerv_e)
 ```
 
 ### Accuracy
