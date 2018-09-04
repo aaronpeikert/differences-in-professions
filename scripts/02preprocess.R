@@ -12,18 +12,10 @@ data_cv <- rsample::vfold_cv(data,
 
 #----recipe----
 recipe_i <- recipe(model_formula_i, 
-                 data = data) %>%
-  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
-  # Normalize
-  step_center(all_predictors(), -profession) %>%
-  step_scale(all_predictors(), -profession)
+                 data = data)
 
 recipe_e <- recipe(model_formula_e, 
-                  data = data) %>%
-  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
-  # Normalize
-  step_center(all_predictors()) %>%
-  step_scale(all_predictors())
+                  data = data)
 
 data_cv <- mutate(data_cv,
                   recipes_i = map(splits,
