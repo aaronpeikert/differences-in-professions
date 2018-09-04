@@ -1,0 +1,234 @@
+---
+title: "Methods"
+author: "Aaron"
+date: "9/4/2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(rpartScore)
+library(pander)
+library(rpart.plot)
+library(tidyposterior)
+library(DescTools)
+library(skimr)
+
+source(here("scripts", "00functions.R"))
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(cache = FALSE)
+knitr::opts_chunk$set(cache.lazy = FALSE)
+knitr::read_chunk(here("scripts", "01load.R"))
+knitr::read_chunk(here("scripts", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "03rpart.R"))
+knitr::read_chunk(here("scripts", "04measures.R"))
+knitr::read_chunk(here("scripts", "05posterior.R"))
+skim_with(numeric = list(p25 = NULL, p75 = NULL, missing = NULL))
+```
+
+## Predictors
+
+```{r load}
+```
+
+```{r predictors}
+```
+
+```{r resample}
+```
+
+```{r recipe}
+```
+
+```{r}
+pander(model_formula_i)
+```
+
+## Model Building
+
+The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gird search with the cross-validation procedure described below.
+
+## References
+
+Breiman L., Friedman J.H., Olshen R.A., Stone C.J. 1984 Classification and Regression Trees. Wadsworth International.
+
+Galimberti G., Soffritti G., Di Maso M. 2012 Classification Trees for Ordinal Responses in R: The rpartScore Package. Journal of Statistical Software, 47(10), 1-25. URL http://www.jstatsoft.org/v47/i10/.
+
+Piccarreta R. 2008 Classication Trees for Ordinal Variables. Computational Statistics, 23, 407-427.
+
+## Model Evaluation
+
+The models were evaluated with Cramers V and plain accuracy.
+
+## References
+
+Agresti, Alan (1996) Introduction to categorical data analysis. NY: John Wiley and Sons
+
+Sakoda, J.M. (1977) Measures of Association for Multivariate Contingency Tables, Proceedings of the Social Statistics Section of the American Statistical Association (Part III), 777-780.
+
+Yule, G. Uday (1912) On the methods of measuring association between two attributes. Journal of the Royal Statistical Society, LXXV, 579-652
+
+## Model Estimates
+
+The estimates for the evaluation measures were found using ten times repated ten fold cross validation. Therefor all estimates given here are on unseen data.
+
+These estimates set expactation how a model with these setting would perform on unseen data. From this follow two things:
+
+1. we only evaluate the generalizing capacity of the model, meaning a model that only represents the training set will be evaluated badly
+
+2. its not a direct estimate for the final model, but instead the expactation one has for a model which is build the way the final model is build for an equivalent data generating process
+
+```{r cache}
+refit_rpart <- !fs::file_exists(here("out", "data_cv.rds"))
+```
+
+```{r rpart, eval = refit_rpart}
+```
+
+```{r cache2, eval = !refit_rpart}
+data_cv <- read_rds(here("out", "data_cv.rds"))
+```
+
+```{r prediction}
+```
+
+```{r accuracy}
+```
+
+```{r cramerv}
+```
+
+## Final Model
+
+```{r message=FALSE, warning=FALSE, cache=TRUE}
+fit_rpart <- function(recipe, ...){
+  #browser()
+  pred <- recipe %>% juice(all_predictors()) %>% names()
+  out <- recipe %>% juice(all_outcomes()) %>% names()
+  model_formula <- as.formula(paste0(out, " ~ ", paste(pred, collapse = " + ")))
+  rpartScore(model_formula,
+        data = juice(recipe, everything(), composition = "data.frame"),
+        ...)
+}
+recipe_i %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE,
+            split = "abs",
+            prune = "mr") %>% 
+  rpart.plot(fallen.leaves = F)
+```
+
+## Difference
+
+To test the hypothesis that the profession is an important predictor (that it contributes uniquely to the prediction power) a bayssian mixed effect models is utilzed. To perform such a model we have estimated the predictive power of the same model as described above without the predictor profession.
+
+From this process we obtained a datset, where the two models are fited on the same test/holdout samples. Therefore we have 100 (10 folds, repated ten times) data points on the performance of these to models.
+
+## Model without profession
+
+```{r message=FALSE, warning=FALSE, cache=TRUE}
+recipe_e %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE,
+            split = "abs",
+            prune = "mr") %>% 
+  rpart.plot(fallen.leaves = F)
+```
+
+## Descriptive
+
+Descriptive there is a difference.
+
+```{r}
+data_cv %>%
+  select(acc_i, acc_e, cramerv_i, cramerv_e) %>% 
+  gather() %>% 
+  mutate(measure = str_remove(model, "_[i,e]$"),
+         model = if_else(str_extract(model, "[i,e]$") == "i", "included", "excluded")) %>% 
+  ggplot(aes(statistic, color = model)) +
+  geom_density() +
+  facet_wrap(~measure) +
+  theme_minimal() +
+  NULL
+```
+
+## Descriptive
+
+```{r}
+data_cv %>%
+  select(acc_i, acc_e, cramerv_i, cramerv_e) %>% 
+  skim()
+```
+
+
+## Sampling ACC
+
+But some of the variance is due to the sampling.
+
+```{r acc-stacked}
+```
+
+```{r}
+acc_stacked %>%
+  unite(id, id, id2) %>% 
+  ggplot(aes(x = model, y = statistic, group = id, col = id)) + 
+  geom_line(alpha = .75) + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  ylab("accuracy") +
+  NULL
+```
+
+## Sampling CramerV
+
+```{r cramerv-stacked}
+```
+
+```{r}
+cramerv_stacked %>% 
+  unite(id, id, id2) %>% 
+  ggplot(aes(x = model, y = statistic, group = id, col = id)) + 
+  geom_line(alpha = .75) + 
+  theme_minimal() +
+  theme(legend.position = "none") +
+  ylab("Craner's V") +
+  NULL
+```
+
+## Significant?
+
+Using the evaluation measures (CramerV and ACC) as dependent variables, the folds as randome effect and the inclusion of professen as a fixed effect:
+
+```{r acc-model, results='hide'}
+```
+
+```{r cramerv-model, results='hide'}
+```
+
+```{r}
+rbind(summary(acc_vs), summary(cramerv_vs)) %>%
+  select(contrast, probability, mean, lower, upper) %>%
+  pander()
+```
+
+## Significant?
+
+This procedure is adapted from:
+
+Benavoli, A., Corani, G., Demšar, J., & Zaffalon, M. (2017). Time for a change: a tutorial for comparing multiple classifiers through Bayesian analysis. The Journal of Machine Learning Research, 18(1), 2653-2688.
+
+## ACC
+
+```{r}
+ggplot(acc_vs) + theme_minimal()
+```
+
+## CramerV
+
+```{r}
+ggplot(cramerv_vs) + theme_minimal()
+```
+
