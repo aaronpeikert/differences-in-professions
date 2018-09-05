@@ -10,14 +10,14 @@ data <- mutate(data,
                Berufsgruppe = recode(Berufsgruppe,
                                      `Metall- und Elektroberufe` = "metal-electrical",
                                      Laborberufe = "lab",
-                                     Produktionsberufe = "produktion",
+                                     Produktionsberufe = "production",
                                      `Kaufmännische Berufe` = "commercial"))
 data <- mutate_all(data, as.vector) # remove spss atributes, they make some problems in modelling
 data <- rename(data,
                age = alter,
                profession = Berufsgruppe,
                verbal_intelligence = verbale_Intelligenz_HIT,
-               numeric_intelligence = numerische_Intelligenz_HIT,
+               numerical_intelligence = numerische_Intelligenz_HIT,
                rating = gesamt)
 
 #----predictors----
