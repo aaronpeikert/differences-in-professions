@@ -196,5 +196,5 @@ cramerv_model$stan
 summary(cramerv_vs) %>%
   select(contrast, probability, mean, lower, upper) %>%
   pander()
-ggplot(cramer_vs) + theme_minimal()
+ggplot(cramerv_vs) + theme_minimal()
 ```
