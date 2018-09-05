@@ -16,6 +16,7 @@ library(tidyverse)
 library(recipes)
 library(rsample)
 library(rpart)
+library(rpart.plot)
 library(pander)
 library(DescTools)
 
@@ -29,9 +30,17 @@ knitr::read_chunk(here("scripts", "03rpart.R"))
 knitr::read_chunk(here("scripts", "04measures.R"))
 ```
 
-# Preparation
+```{r load}
+```
 
-```{r preparation, child = here("documents", "preparation.Rmd")}
+```{r predictors}
+```
+
+```{r}
+model_formula
+```
+
+```{r resample}
 ```
 
 ```{r recipe}
@@ -68,32 +77,37 @@ best_hyper <- data_cv %>%
   gather(measure, value, acc, CramerV, multAUC) %>% 
   group_by(measure) %>% 
   filter(value == max(value)) %>% 
+  group_by(minbucket, add = TRUE) %>%
   slice(1L)
 
 pander(best_hyper)
 ```
 
 ```{r}
+set.seed(1234)
 recipe %>%
   prep(data, retain = TRUE) %>%
-  fit_rpart(model = TRUE, minsplit = best_hyper$minsplit[[1]],
-            minbucket = best_hyper$minbucket[[1]]) %>% 
-  rpart.plot(fallen.leaves = F)
+  fit_rpart(model = TRUE, minsplit = 25,
+            minbucket = 10) %>% 
+  rpart.plot(fallen.leaves = F, main = "Plot with minsplit = 10 & minbucket = 25")
 
 data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  filter(minsplit == filter(best_hyper, measure == "acc")$minsplit,
+         minbucket == filter(best_hyper, measure == "acc")$minbucket) %>% 
   ggplot(aes(acc)) +
   geom_density(fill = "lightgrey") +
   theme_minimal()
 
 data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  filter(minsplit == filter(best_hyper, measure == "CramerV")$minsplit,
+         minbucket == filter(best_hyper, measure == "CramerV")$minbucket) %>% 
   ggplot(aes(CramerV)) +
   geom_density(fill = "lightgrey") +
   theme_minimal()
 
 data_cv %>%
-  filter(minsplit == best_hyper$minsplit[[1]], minbucket == best_hyper$minbucket[[1]]) %>% 
+  filter(minsplit == filter(best_hyper, measure == "multAUC")$minsplit,
+         minbucket == filter(best_hyper, measure == "multAUC")$minbucket) %>% 
   ggplot(aes(multAUC)) +
   geom_density(fill = "lightgrey") +
   theme_minimal()
