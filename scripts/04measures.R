@@ -31,12 +31,12 @@ decide <- function(probs, ...){
     }
     return(out)
   }
-  out <- probs %>% select(...) %>% pmap_chr(decide_)
+  out <- probs %>% pmap_chr(decide_)
 }
 
 data_cv <- data_cv %>%
   mutate(predicted_probs = map(predicted_rpart, "probs"),
-         predicted_class =  map(predicted_probs, decide, num_range("", 1:5)),
+         predicted_class =  map(predicted_probs, decide),
          true_class = map(predicted_rpart, "true") %>%
            map(1) %>%
            map(as.character))
@@ -60,4 +60,4 @@ multAUC <- function(true, probs){
 }
 
 data_cv <- mutate(data_cv,
-                  multAUC = map2_dbl(true_class, predicted_probs, multAUC))
+                  multAUC = map2_dbl(true_class, predicted_probs, !!multAUC))

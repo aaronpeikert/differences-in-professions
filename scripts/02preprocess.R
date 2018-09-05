@@ -8,18 +8,14 @@ set.seed(1002)
 data_cv <- rsample::vfold_cv(data,
                              v = 10, #ten folds
                              repeats = 10, #ten repeats
-                             strata = "Berufsgruppe") #stratified
+                             strata = "profession") #stratified
 
 #----recipe----
 recipe <- recipe(model_formula, 
-                 data = data) %>%
-  #step_BoxCox(Diktat) %>% #Diktat is skewd/heavy tailed
-  # Normalize
-  step_center(all_predictors()) %>%
-  step_scale(all_predictors())
+                   data = data)
 
 data_cv <- mutate(data_cv, recipes = map(splits,
-                                prepper,
-                                recipe = recipe,
-                                retain = TRUE,
-                                verbose = FALSE))
+                                         prepper,
+                                         recipe = recipe,
+                                         retain = TRUE,
+                                         verbose = FALSE))
