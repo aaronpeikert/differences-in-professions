@@ -21,6 +21,8 @@ source(here("scripts", "00functions.R"))
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(cache = FALSE)
 knitr::opts_chunk$set(cache.lazy = FALSE)
+knitr::opts_chunk$set(dev=c("png", "CairoPNG"), 
+               dpi=c(96L, 300L))
 knitr::read_chunk(here("scripts", "01load.R"))
 knitr::read_chunk(here("scripts", "02preprocess.R"))
 knitr::read_chunk(here("scripts", "03rpart.R"))
@@ -137,6 +139,7 @@ fit_rpart <- function(recipe, ...){
         data = juice(recipe, everything(), composition = "data.frame"),
         ...)
 }
+set.seed(1234)
 recipe_i %>%
   prep(data, retain = TRUE) %>%
   fit_rpart(model = TRUE,
@@ -156,6 +159,7 @@ From this process we obtained a datset, where the two models are fited on the sa
 ## Model without profession
 
 ```{r message=FALSE, warning=FALSE, cache=TRUE}
+set.seed(1234)
 recipe_e %>%
   prep(data, retain = TRUE) %>%
   fit_rpart(model = TRUE,
