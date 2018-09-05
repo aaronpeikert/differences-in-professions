@@ -238,7 +238,7 @@ cramerv_stacked %>%
 
 ## Significant?
 
-Using the evaluation measures (CramerV and ACC) as dependent variables, the folds as randome effect and the inclusion of professen as a fixed effect:
+Using the evaluation measures (CramerV and ACC) as dependent variables, the folds as randome effect and the inclusion of professen as a fixed effect, assuming Gaussian error and equal variance.
 
 ```{r acc-model, results='hide'}
 ```
