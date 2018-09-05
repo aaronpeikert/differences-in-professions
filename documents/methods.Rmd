@@ -49,7 +49,27 @@ pander(model_formula_i)
 
 ## Model Building
 
-The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gird search with the cross-validation procedure described below.
+The model is a classification tree for ordinal response. The tree is grown using Generalized Gini impurity function, with absolut difference in scores. The pruning is based on the total misclassification rate. These settings were found to perform best in a hyperparamter gridsearch with the cross-validation procedure described below.
+
+## Generalized Gini Impurity
+
+A classical classification tree splits gredy so that the endnodes are pure (one class is dominating the node). For example in this table prurity would favour solution A (purity of A = 11/(11+2+8) = 52,38%; B = 10/(10+8+3) = 47,62%:
+
+| class | A  | B  |
+|-------|----|----|
+| 1     | 11 | 10 |
+| 2     | 2  | 8  |
+| 3     | 8  | 3  |
+
+## Generalized Gini Impurity
+
+However, taking into account the ordinal structure, that might not lead to optimal results. Instead the ordinal structure makes it possible to calculate a distance between possible cuts and maximize this distance. Such a distance (with other favorible properties, such as monotone exclusivity preference property) is the Generalized Gini Impurity. Aditionally one might sqaure the optained score to punish more for extreme points. This option was explored but did not perform better then the absolute distance in the crossfolding.
+
+## Pruning
+
+The best tree size (through pruning) is, due to the software implementation in the moment, found via another 10-fold cross folding, within our own crossvolding procedure. This is unnassecary and could be evaluated as another hyperparamter directly in the first level gridsearch, but shouldn't make a big difference.
+
+However the godness of pruning can be found via minimizing the risk. Risk can either be defined as misclassifaction cost or misclassification rate. In the crossvalidation misclassification rate performed better. 
 
 ## References
 
@@ -59,7 +79,7 @@ Galimberti G., Soffritti G., Di Maso M. 2012 Classification Trees for Ordinal Re
 
 Piccarreta R. 2008 Classication Trees for Ordinal Variables. Computational Statistics, 23, 407-427.
 
-## Model Evaluation
+## Model Performance Evaluation
 
 The models were evaluated with Cramers V and plain accuracy.
 
@@ -71,9 +91,13 @@ Sakoda, J.M. (1977) Measures of Association for Multivariate Contingency Tables,
 
 Yule, G. Uday (1912) On the methods of measuring association between two attributes. Journal of the Royal Statistical Society, LXXV, 579-652
 
-## Model Estimates
+## Model Performance Estimates
 
 The estimates for the evaluation measures were found using ten times repated ten fold cross validation. Therefor all estimates given here are on unseen data.
+
+
+
+## Model Performance Estimates
 
 These estimates set expactation how a model with these setting would perform on unseen data. From this follow two things:
 
@@ -120,6 +144,8 @@ recipe_i %>%
             prune = "mr") %>% 
   rpart.plot(fallen.leaves = F)
 ```
+
+# Difference
 
 ## Difference
 
@@ -214,12 +240,6 @@ rbind(summary(acc_vs), summary(cramerv_vs)) %>%
   pander()
 ```
 
-## Significant?
-
-This procedure is adapted from:
-
-Benavoli, A., Corani, G., Demšar, J., & Zaffalon, M. (2017). Time for a change: a tutorial for comparing multiple classifiers through Bayesian analysis. The Journal of Machine Learning Research, 18(1), 2653-2688.
-
 ## ACC
 
 ```{r}
@@ -232,3 +252,8 @@ ggplot(acc_vs) + theme_minimal()
 ggplot(cramerv_vs) + theme_minimal()
 ```
 
+## Significant?
+
+This procedure is losely absed/adapted from:
+
+Benavoli, A., Corani, G., Demšar, J., & Zaffalon, M. (2017). Time for a change: a tutorial for comparing multiple classifiers through Bayesian analysis. The Journal of Machine Learning Research, 18(1), 2653-2688.
