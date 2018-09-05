@@ -95,7 +95,7 @@ Yule, G. Uday (1912) On the methods of measuring association between two attribu
 
 ## Model Performance Estimates
 
-The estimates for the evaluation measures were found using ten times repated ten fold cross validation. Therefor all estimates given here are on unseen data.
+The estimates for the evaluation measures were found using ten times repated ten fold cross validation. Therefor all estimates given here are on unseen data. The sampling was stratified accoring to the rating.
 
 
 
