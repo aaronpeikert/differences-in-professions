@@ -169,13 +169,25 @@ recipe_e %>%
 Descriptive there is a difference.
 
 ```{r}
-data_cv %>%
+density_plot <- data_cv %>%
   select(acc_i, acc_e, cramerv_i, cramerv_e) %>% 
   gather() %>% 
   mutate(measure = str_remove(model, "_[i,e]$"),
-         model = if_else(str_extract(model, "[i,e]$") == "i", "included", "excluded")) %>% 
+         model = if_else(str_extract(model, "[i,e]$") == "i", "included", "excluded"))
+max_dens <- function(x){
+  dens <- density(x)
+  out <- dens$x[which.max(dens$y)]
+  return(out)
+}
+density_plot_stats <- density_plot %>%
+  group_by(model, measure) %>% 
+  summarise(mean = mean(statistic),
+            `Max. density` = max_dens(statistic)) %>% 
+  gather("statistic", "value", mean, `Max. density`)
+density_plot %>% 
   ggplot(aes(statistic, color = model)) +
   geom_density() +
+  geom_vline(data = density_plot_stats, aes(xintercept = value, color = model, linetype = statistic)) +
   facet_wrap(~measure) +
   theme_minimal() +
   NULL
