@@ -5,10 +5,14 @@ library(here)
 data <- haven::read_sav(here("data", "Diplomarbeit_Welz_2011.sav"))
 data <- rename(data, gesamt = gesamtbeurteilung_mean_gerundet_je_mehr_desto_mehr,
                alter = Alter_zum_Testzeitpunkt)
-data <- mutate_all(data, as.vector) # remove spss atributes, they make some problems in modelling
 data <- mutate(data,
-               Berufsgruppe = as.factor(Berufsgruppe),
-               gesamt = as.numeric(.data$gesamt))
+               Berufsgruppe = as.character(as_factor(Berufsgruppe)),
+               Berufsgruppe = recode(Berufsgruppe,
+                                     `Metall- und Elektroberufe` = "metal-electrical",
+                                     Laborberufe = "lab",
+                                     Produktionsberufe = "produktion",
+                                    `Kaufmännische Berufe` = "commercial"))
+data <- mutate_all(data, as.vector) # remove spss atributes, they make some problems in modelling
 data <- rename(data,
                age = alter,
                profession = Berufsgruppe,
