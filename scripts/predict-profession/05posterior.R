@@ -1,6 +1,6 @@
 library(here)
 library(tidyposterior)
-source(here("scripts", "04measures.R"))
+source(here("scripts", "predict-profession", "04measures.R"))
 
 #----acc-stacked----
 acc <- select(data_cv, starts_with("id"), starts_with("acc"))

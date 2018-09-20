@@ -1,6 +1,6 @@
 library(rpartScore)
 library(here)
-source(here("scripts", "02preprocess.R"))
+source(here("scripts", "predict-profession", "02preprocess.R"))
 
 #----rpart----
 fit_rpart <- function(recipe, ...){
