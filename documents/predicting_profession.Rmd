@@ -1,0 +1,117 @@
+---
+title: "Predict Profesion with rpart"
+author: "Aaron"
+date: "7/12/2018"
+output:
+  html_document:
+    code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+---
+  
+```{r setup, include=FALSE}
+library(here)
+library(tidyverse)
+library(recipes)
+library(rsample)
+library(rpart)
+library(rpart.plot)
+library(pander)
+library(DescTools)
+
+source(here("scripts", "predict-rating", "00functions.R"))
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = FALSE)
+knitr::opts_chunk$set(cache.lazy = FALSE)
+knitr::opts_chunk$set(dev=c("png", "CairoPNG"), 
+               dpi=c(96L, 300L))
+knitr::read_chunk(here("scripts", "predict-rating", "01load.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "03rpart.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "04measures.R"))
+```
+
+```{r load}
+```
+
+```{r predictors}
+```
+
+```{r}
+model_formula
+```
+
+```{r resample}
+```
+
+```{r recipe}
+```
+
+# Classifikation Tree
+
+```{r rpart}
+```
+
+## Calc Measures
+
+```{r prediction}
+```
+
+```{r decide}
+```
+
+```{r accuracy}
+```
+
+```{r cramerv}
+```
+
+```{r multiAUC}
+```
+
+## Best Hyperparameter
+
+```{r}
+best_hyper <- data_cv %>%
+  group_by(minsplit, minbucket) %>%
+  summarise_at(vars(acc, CramerV, multAUC), mean) %>% 
+  gather(measure, value, acc, CramerV, multAUC) %>% 
+  group_by(measure) %>% 
+  filter(value == max(value)) %>% 
+  group_by(minbucket, add = TRUE) %>%
+  slice(1L)
+
+pander(best_hyper)
+```
+
+```{r}
+set.seed(1234)
+recipe %>%
+  prep(data, retain = TRUE) %>%
+  fit_rpart(model = TRUE, minsplit = 30,
+            minbucket = 10) %>% 
+  rpart.plot(fallen.leaves = F, main = "Plot with minsplit = 30 & minbucket = 10")
+
+data_cv %>%
+  filter(minsplit == filter(best_hyper, measure == "acc")$minsplit,
+         minbucket == filter(best_hyper, measure == "acc")$minbucket) %>% 
+  ggplot(aes(acc)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+
+data_cv %>%
+  filter(minsplit == filter(best_hyper, measure == "CramerV")$minsplit,
+         minbucket == filter(best_hyper, measure == "CramerV")$minbucket) %>% 
+  ggplot(aes(CramerV)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+
+data_cv %>%
+  filter(minsplit == filter(best_hyper, measure == "multAUC")$minsplit,
+         minbucket == filter(best_hyper, measure == "multAUC")$minbucket) %>% 
+  ggplot(aes(multAUC)) +
+  geom_density(fill = "lightgrey") +
+  theme_minimal()
+```
+
