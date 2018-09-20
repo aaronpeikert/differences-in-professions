@@ -1,7 +1,7 @@
 library(here)
 library(recipes)
 library(rsample)
-source(here("scripts", "predict-profession", "01load.R"))
+source(here("scripts", "predict-rating", "01load.R"))
 
 #----resample----
 set.seed(1002)

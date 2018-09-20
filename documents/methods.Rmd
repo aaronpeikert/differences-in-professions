@@ -17,17 +17,17 @@ library(tidyposterior)
 library(DescTools)
 library(skimr)
 
-source(here("scripts", "predict-profession", "00functions.R"))
+source(here("scripts", "predict-rating", "00functions.R"))
 knitr::opts_chunk$set(echo = FALSE)
 knitr::opts_chunk$set(cache = FALSE)
 knitr::opts_chunk$set(cache.lazy = FALSE)
 knitr::opts_chunk$set(dev=c("png", "CairoPNG"), 
                dpi=c(96L, 300L))
-knitr::read_chunk(here("scripts", "predict-profession", "01load.R"))
-knitr::read_chunk(here("scripts", "predict-profession", "02preprocess.R"))
-knitr::read_chunk(here("scripts", "predict-profession", "03rpart.R"))
-knitr::read_chunk(here("scripts", "predict-profession", "04measures.R"))
-knitr::read_chunk(here("scripts", "predict-profession", "05posterior.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "01load.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "02preprocess.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "03rpart.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "04measures.R"))
+knitr::read_chunk(here("scripts", "predict-rating", "05posterior.R"))
 skim_with(numeric = list(p25 = NULL, p75 = NULL, missing = NULL))
 ```
 
@@ -108,14 +108,14 @@ These estimates set expactation how a model with these setting would perform on 
 2. its not a direct estimate for the final model, but instead the expactation one has for a model which is build the way the final model is build for an equivalent data generating process
 
 ```{r cache}
-refit_rpart <- !fs::file_exists(here("out", "predict-profession", "data_cv.rds"))
+refit_rpart <- !fs::file_exists(here("out", "predict-rating", "data_cv.rds"))
 ```
 
 ```{r rpart, eval = refit_rpart}
 ```
 
 ```{r cache2, eval = !refit_rpart}
-data_cv <- read_rds(here("out", "predict-profession", "data_cv.rds"))
+data_cv <- read_rds(here("out", "predict-rating", "data_cv.rds"))
 ```
 
 ```{r prediction}
